@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { CartContext } from '../context/CartContext';
+import Link from 'next/link';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
@@ -14,11 +15,11 @@ export default function ProductsPage() {
         const data = doc.data();
         return {
           id: doc.id,
-          nombre: data.Nombre || '',       // Convertimos Nombre a nombre
+          nombre: data.Nombre || '',
           precio: data.precio || 0,
           descripcion: data.descripcion || '',
           imagenUrl: data.imagenUrl || '',
-          stock: data.strock || 0,         // Recuerda corregir "strock" en Firestore si puedes
+          stock: data.strock || 0,
           categoria: data.categoria || '',
         };
       });
@@ -29,6 +30,10 @@ export default function ProductsPage() {
 
   return (
     <div className="max-w-6xl mx-auto p-4">
+     <Link href="/cart" className="text-blue-600 font-semibold mb-4 block">
+  Ver carrito 🛒
+</Link>
+
       <h1 className="text-2xl font-bold mb-6">Catálogo de Productos</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {products.map(product => (
@@ -53,4 +58,3 @@ export default function ProductsPage() {
     </div>
   );
 }
-
