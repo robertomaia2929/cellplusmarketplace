@@ -1,6 +1,8 @@
 import { useContext, useState } from 'react';
 import { CartContext } from '../context/CartContext';
-import QRCode from 'qrcode.react';  // Importa el componente QR
+import QRCode from 'qrcode.react'; // Import default
+import { auth, db } from '../lib/firebase'; // Import auth y db juntos
+import { collection, addDoc, Timestamp } from 'firebase/firestore';
 
 export default function CheckoutPage() {
   const { cartItems, clearCart } = useContext(CartContext);
@@ -17,21 +19,39 @@ export default function CheckoutPage() {
     0
   );
 
-  const yappyData = `yappy://pay?recipient=TU_NUMERO_O_CODIGO&amount=${totalAmount.toFixed(2)}`;
+  const yappyData = `yappy://pay?recipient=67890123&amount=${totalAmount.toFixed(2)}`;
 
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
+
     if (!form.nombre || !form.direccion || !form.telefono || !form.email) {
       alert('Por favor llena todos los campos');
       return;
     }
-    // Aquí podrías validar que el pago ya se haya realizado (opcional)
-    setOrderConfirmed(true);
-    clearCart();
+
+    try {
+      await addDoc(collection(db, 'orders'), {
+        uid: auth.currentUser ? auth.currentUser.uid : null,
+        nombre: form.nombre,
+        direccion: form.direccion,
+        telefono: form.telefono,
+        email: form.email,
+        items: cartItems,
+        total: totalAmount,
+        estado: 'pendiente',
+        creadoEn: Timestamp.now()
+      });
+
+      setOrderConfirmed(true);
+      clearCart();
+    } catch (error) {
+      console.error('Error al guardar el pedido:', error);
+      alert('Ocurrió un error al guardar el pedido.');
+    }
   };
 
   if (orderConfirmed) {
@@ -39,6 +59,7 @@ export default function CheckoutPage() {
       <div className="max-w-4xl mx-auto p-4">
         <h1 className="text-2xl font-bold mb-6">¡Compra realizada con éxito!</h1>
         <p>Gracias por tu compra, {form.nombre}.</p>
+        <p className="mt-4 text-gray-600">Nos pondremos en contacto contigo para coordinar el envío.</p>
       </div>
     );
   }
@@ -47,7 +68,6 @@ export default function CheckoutPage() {
     <div className="max-w-4xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">Checkout</h1>
 
-      {/* Mostrar QR solo si hay productos */}
       {cartItems.length > 0 && (
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-2">Paga con Yappy</h2>
@@ -116,3 +136,4 @@ export default function CheckoutPage() {
     </div>
   );
 }
+

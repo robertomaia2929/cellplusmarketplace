@@ -12,6 +12,8 @@ export function CartProvider({ children }) {
     if (savedCart) {
       setCartItems(JSON.parse(savedCart));
     }
+
+    
   }, []);
 
   // Guardar carrito en localStorage cuando cambia cartItems

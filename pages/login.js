@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { auth, db } from '../lib/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
+import { useRouter } from 'next/router';
 
 export default function Login() {
   const [isRegistering, setIsRegistering] = useState(false);
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [nombre, setNombre] = useState('');
@@ -24,9 +26,11 @@ export default function Login() {
           telefono,
         });
         alert("Usuario registrado con éxito");
+                router.push('/')
       } else {
         await signInWithEmailAndPassword(auth, email, password);
         alert("Inicio de sesión exitoso");
+        router.push('/')
       }
     } catch (err) {
       console.error(err);
