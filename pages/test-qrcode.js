@@ -1,5 +1,5 @@
 import React from 'react';
-import QRCode from 'qrcode.react';
+import {QRCode} from 'qrcode.react';
 
 export default function TestQRCode() {
   const value = "yappy://pay?recipient=67890123&amount=100.00";

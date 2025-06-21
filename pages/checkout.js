@@ -1,17 +1,22 @@
 import { useContext, useState } from 'react';
 import { CartContext } from '../context/CartContext';
-import QRCode from 'qrcode.react'; // Import default
-import { auth, db } from '../lib/firebase'; // Import auth y db juntos
+import { QRCodeSVG } from 'qrcode.react'; // Cambiado a named import QRCodeSVG
+import { auth, db } from '../lib/firebase'; 
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 
 export default function CheckoutPage() {
   const { cartItems, clearCart } = useContext(CartContext);
+
+  // Para verificar que QRCodeSVG se importa bien
+  console.log('QRCodeSVG:', QRCodeSVG);
+
   const [form, setForm] = useState({
     nombre: '',
     direccion: '',
     telefono: '',
     email: '',
   });
+
   const [orderConfirmed, setOrderConfirmed] = useState(false);
 
   const totalAmount = cartItems.reduce(
@@ -72,7 +77,8 @@ export default function CheckoutPage() {
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-2">Paga con Yappy</h2>
           <p>Total a pagar: <strong>${totalAmount.toFixed(2)}</strong></p>
-          <QRCode value={yappyData} size={200} />
+          {/* Usamos QRCodeSVG aquí */}
+          <QRCodeSVG value={yappyData} size={200} />
           <p className="mt-2 text-sm text-gray-700">
             Escanea este código con Yappy para hacer el pago.
           </p>
@@ -136,4 +142,3 @@ export default function CheckoutPage() {
     </div>
   );
 }
-

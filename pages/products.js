@@ -19,7 +19,7 @@ export default function ProductsPage() {
           precio: data.precio || 0,
           descripcion: data.descripcion || '',
           imagenUrl: data.imagenUrl || '',
-          stock: data.strock || 0,
+          stock: data.stock || 0,
           categoria: data.categoria || '',
         };
       });

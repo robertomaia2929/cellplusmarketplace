@@ -10,12 +10,12 @@ export default function CartPage() {
       <div className="max-w-4xl mx-auto p-4">
         <h1 className="text-2xl font-bold mb-6">Carrito de Compras</h1>
         <p>Tu carrito está vacío.</p>
-        <link href='/products'>
+        <Link href='/products'>
         <button className='mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700'>
           volver al catalogo
         </button>
         
-        </link>
+        </Link>
       </div>
     );
   }
@@ -57,7 +57,7 @@ export default function CartPage() {
           Vaciar Carrito
         </button>
 
-        <Link href="/checkout">
+        <Link href="/checkout" passHref>
           <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
             Proceder al pago
           </button>
