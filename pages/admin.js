@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
-import { db } from '../lib/firebase';
+import { auth, db } from '../lib/firebase';
 import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { onAuthStateChanged } from 'firebase/auth';
+import { getDoc } from 'firebase/firestore';
+import { useRouter } from 'next/router';
+import { userAgent } from 'next/server';
 
 export default function AdminPage() {
   const [orders, setOrders] = useState([]);
@@ -10,6 +14,33 @@ export default function AdminPage() {
   const [busqueda, setBusqueda] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+
+  const router = useRouter();
+
+    //  Nuevo useEffect: protección de ruta
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userRef = doc(db, 'users', user.uid);
+        const userSnap = await getDoc(userRef);
+        const userData = userSnap.data();
+
+        if (!userData || userData.rol !== 'admin') {
+          alert('Acceso denegado: no eres administrador');
+          router.push('/');
+        }
+      } else {
+        router.push('/login');
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+ 
+
+
+
+
 
   useEffect(() => {
     const fetchOrders = async () => {
