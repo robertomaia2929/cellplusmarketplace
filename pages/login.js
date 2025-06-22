@@ -3,6 +3,13 @@ import { auth, db } from '../lib/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { useRouter } from 'next/router';
+//import {Navbar} from  "@/componentes/Navbar"
+
+// nav bar
+
+
+
+
 
 export default function Login() {
   const [isRegistering, setIsRegistering] = useState(false);
